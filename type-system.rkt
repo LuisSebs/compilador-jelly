@@ -14,8 +14,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Cosas que faltan y no afectan para esta practica:
-;; Declaracion multiple (dec-mul)
-;; operador ternario (? e0 e1 e2)
+;; Declaracion multiple (dec-mul) CHECK
+;; operador ternario (? e0 e1 e2) CHECK
 
 
 ;; Programa
@@ -62,6 +62,7 @@
   (nanopass-case (jelly Sentencia) ir
                  [,e (get-type-e e tb)]
                  [,dec (get-type-dec dec tb)]
+                 [,dec-mult (get-type-dec-mult dec-mult tb)]
                  [,struct (get-type-struct struct tb)]
                  [(return ,e) (get-type-e e tb)]))
 
@@ -83,6 +84,11 @@
                  [(decl ,i ,ty ,e) (if (eq? ty (get-type-e e tb))
                                        'unit
                                        (error "Error declaracion"))]))
+
+;; Declaración multiple
+(define (get-type-dec-mult ir tb)
+  (nanopass-case (jelly Declaracionmult) ir
+                 [(decl-mult ,i* ... ,ty) 'unit]))
 
 ;; Estructura
 (define (get-type-struct ir tb) ;; CHECK
@@ -127,7 +133,12 @@
                                     [(and (memq ob '(+ - * / %)) (eq? 'int ty-e0) (eq? 'int ty-e1)) 'int]
                                     [(and (memq ob '(== != < <= > >=)) (eq? 'int ty-e0) (eq? 'int ty-e1)) 'boolean]
                                     [(and (memq ob '(== != and or)) (eq? 'boolean ty-e0) (eq? 'boolean ty-e1)) 'boolean]
-                                    [else (error "Error operacion binaria")]))]))
+                                    [else (error "Error operacion binaria")]))]
+                 [(? ,e0 ,e1 ,e2) (let* ([ty-e0 (get-type-e e0 tb)]
+                                         [ty-e1 (get-type-e e1 tb)]
+                                         [ty-e2 (get-type-e e2 tb)])
+                                    (cond
+                                      [(and (eq? 'boolean ty-e0) (eq? ty-e1 ty-e2)) ty-e1]))]))
 
 ;; Arreglo
 (define (get-type-arr ir tb) ;; CHECK
@@ -278,6 +289,18 @@
 
 ;; Γ ⊢ f (e1 , ..., en ) ∶ unit
 (define j21 (let* ([parseo (pj " main{ miFuncion(1, 2, 3) } miFuncion(num1:int, num2:int, num3:int){ var1:int = num1 + num2 + num3 }")]
+                  [renombre (rename-var parseo)] 
+                  [tabla (symbol-table renombre (make-hash))])
+             (type-check renombre tabla)))
+
+;; Declaracion multiple
+(define jdec-mult (let* ([parseo (pj " main{ int a, b, c a = 0 b = 1 c = 2 }")]
+                  [renombre (rename-var parseo)] 
+                  [tabla (symbol-table renombre (make-hash))])
+             (type-check renombre tabla)))
+
+;; Operador ternario
+(define jop-tern (let* ([parseo (pj " main{ x:int = (2>1) ? 1 : 2+3 }")]
                   [renombre (rename-var parseo)] 
                   [tabla (symbol-table renombre (make-hash))])
              (type-check renombre tabla)))
