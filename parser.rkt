@@ -226,6 +226,7 @@
          [lineas
           [(stmt lineas) (list* $1 $2)] ;; Sentencias
           [(stmt) (list $1)]            ;; Sentencia
+          [() empty]
           ]
 
          ;; Parámetros
@@ -260,12 +261,14 @@
 
          ;; Métodos
          [meth
+          [(ID LP RP DDOT typ bloque) (metodo $1 empty $5 $6)]
           [(ID LP params RP DDOT typ bloque) (metodo $1 $3 $6 $7)]
           ]
 
          ;; Funciones
          [func
-          [(ID LP params RP bloque) (funcion $1 $3 $5)]
+          [(ID LP RP bloque) (funcion $1 empty $4)]
+          [(ID LP params RP bloque) (funcion $1 $3 $5)]          
           ]
 
          ;; Main
@@ -275,20 +278,21 @@
 
          ;; Procedimientos
          [proc
-          [(func) $1] ;; Funciones
-          [(stmt) $1] ;; Sentencia          
+          [(func) $1] ;; Funciones          
           [(meth) $1] ;; Métodos
-          [(m) $1]    ;; Main
           ]
 
          ;; Programa es:
-         [program
-          [(list-procs) (programa $1)] ;; Una lista de instrucciones
+         [program ;; Una lista de procedimientos con un main
+          [(m list-procs) (programa (append (list $1) $2))]
+          [(list-procs m list-procs) (programa (append $1 (list $2) $3))]
+          [(list-procs m) (programa (append $1 (list $2)))]
           ]
 
          [list-procs
           [(proc list-procs) (list* $1 $2)]
           [(proc) (list $1)]
+          [() empty]
           ]
          ]
         )
@@ -299,69 +303,73 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Arreglos
-(define arr1 "{}")
-(define arr2 "{1,2,3,4,5}")
-(define arr3 "{1,True,a}")
+(define arr1 "main{ {} }")
+(define arr2 "main{ {1,2,3,4,5} }")
+(define arr3 "main{ {1,True,a} }")
 
 ;; Expresiones booleanas
-(define bool1 "True")
-(define bool2 "True == False")
-(define bool3 "(True == False)")
-(define bool4 "(True == False) != False")
-(define bool5 "False & (True | False)")
-(define bool6 "(False != True) | (True == False)")
-(define bool7 "(False != True) & !(True == False) | (False)")
+(define bool1 "main{ True }")
+(define bool2 "main{ True == False }")
+(define bool3 "main{ (True == False) }")
+(define bool4 "main{ (True == False) != False }")
+(define bool5 "main{ False & (True | False) }")
+(define bool6 "main{ (False != True) | (True == False) }")
+(define bool7 "main{ (False != True) & !(True == False) | (False) }")
 
 ;; Expresiones aritméticas
-(define arit1 "2")
-(define arit2 "1 + 2")
-(define arit3 "1 + 2 * 4 - 3 / 5")
-(define arit4 "1 - (2 + 3)")
-(define arit5 "(1 + 3) * 2")
-(define arit6 "(1 + 3) * (2 / 4)")
-(define arit7 "(1 + 3) * (2 / (4 - 5))")
+(define arit1 "main{ 2 }")
+(define arit2 "main{ 1 + 2 }")
+(define arit3 "main{ 1 + 2 * 4 - 3 / 5 }")
+(define arit4 "main{ 1 - (2 + 3) }")
+(define arit5 "main{ (1 + 3) * 2 }")
+(define arit6 "main{ (1 + 3) * (2 / 4) }")
+(define arit7 "main{ (1 + 3) * (2 / (4 - 5)) }")
 
 ;; Declaraciones
-(define dec1 "temp1:int = 2")
-(define dec2 "temp_2:int")
-(define dec3 "dummyVar:boolean")
-(define dec4 "i:int = f(x)")
-(define dec5 "a:int[] = {1,2,3,4}")
-(define dec6 "b:boolean[] = {True}")
+(define dec1 "main{ temp1:int = 2 }")
+(define dec2 "main{ temp_2:int }")
+(define dec3 "main{ dummyVar:boolean }")
+(define dec4 "main{ i:int = f(x) }")
+(define dec5 "main{ a:int[] = {1,2,3,4} }")
+(define dec6 "main{ b:boolean[] = {True} }")
 
 ;; Asignaciones
-(define asign1 "x = x + 1")
-(define asign2 "b = !b")
+(define asign1 "main{ x = x + 1 }")
+(define asign2 "main{ b = !b }")
 
 ;; Estructuras de control
 (define if-in        ;; if
-  "if(1<z) {
-     a++
-     n++}
-   else {
-     b++
-     r++}")
+  "main{
+     if(1<z) {
+       a++
+       n++}
+     else {
+       b++
+       r++}
+   }")
 
 ;; while
 (define while-in
-  "while (x < 0) {
-    if(1<z) {
-      a++
-      n++}
-    else {
-      b++
-      r++}
+  "main{
+     while (x < 0) {
+         if(1<z) {
+           a++
+           n++}
+         else {
+           b++
+           r++}
+     }
    }")
 
 ;; Llamadas a funciones
-(define call1 "f()")
-(define call2 "f(x)")
-(define call3 "f(a, b)")
-(define call4 "f(a, True, 2)")
+(define call1 "main{ f() }")
+(define call2 "main{ f(x) }")
+(define call3 "main{ f(a, b) }")
+(define call4 "main{ f(a, True, 2) }")
 
 ;; Métodos
 (define meth1
-  "gcd (var1:int, var2:int): int {
+  "main{} gcd (var1:int, var2:int): int {
     while(var1 != 0) {
         if (var1 < var2) var2 = var2 - var1
         else var1 = var1 - var2
@@ -370,7 +378,7 @@
    }")
 
 (define meth2
-  "gdc(var1:int, var2:int): int {
+  "main{} gdc(var1:int, var2:int): int {
     while var1 != 0 {
         if (var1 < var2) var2 = var2 - var1
         else var1 = var1 - var2
@@ -379,7 +387,7 @@
    }")
 
 (define meth3
-  "gdc(var1:int, var2:int) : int {
+  "main{} gdc(var1:int, var2:int) : int {
     while (var1 != 0) {
         if (var1 < var2) var2 = var2 - var1
         else var1 = var1 - var2
@@ -388,7 +396,7 @@
 
 ;; Método
 (define fun
-  "gdc(var1:int, var2:int) {
+  "main{} gdc(var1:int, var2:int) {
      while (x < 0)  {
        if(1<z) {
          a++
@@ -444,24 +452,27 @@
      }
   }")
 
+
+
+
 ;; Sintaxis adicional
 
 ;; Declaración múltiple
-(define dec-mult "int a, b, c")
+(define dec-mult "main{ int a, b, c }")
 
 ;; Asignación múltiple
-(define asign-mult "a = b = c = 0")
+(define asign-mult "main{ a = b = c = 0 }")
 
 ;; Asignación compuesto
-(define as-add "a+=5")
-(define as-subs "a-=5")
+(define as-add "main{ a+=5 }")
+(define as-subs "main{ a-=5 }")
 
 ;; Autoincremento / Autodecremento
-(define a-inc "a++")
-(define a-dec "a--")
+(define a-inc "main{ a++ }")
+(define a-dec "main{ a-- }")
 
 ;; if corto (operador ternario)
-(define if-corto "c:int = a > b ? a : b")
+(define if-corto "main{ c:int = a > b ? a : b }")
 
 ;; Lista de pruebas
 (define pruebas (list
@@ -516,6 +527,7 @@
 (define (ejecuta-pruebas [l pruebas])
   (for/list ([i l])
     (parsea i)))
+
 
 (define (lex-this lexer input) (lambda () (lexer input)))
 

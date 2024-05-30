@@ -1,11 +1,11 @@
 #lang nanopass
 
-(require "practica5.rkt"
+(require "symbol-table.rkt"
           parser-tools/yacc)
 (provide (all-defined-out))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PRÁCTICA 6 : Syntáxis abstracta
+;; PRÁCTICA 6 : Sistema de tipos
 ;; Integrantes:
 ;; - Arrieta Mancera Luis Sebastián
 ;; - Góngora Ramírez Dania Paula

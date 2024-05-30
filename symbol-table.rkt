@@ -6,7 +6,7 @@
 (provide (all-defined-out))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PRÁCTICA 5 : Syntáxis abstracta
+;; PRÁCTICA 5 : Tabla de simbolos
 ;; Integrantes:
 ;; - Arrieta Mancera Luis Sebastián
 ;; - Góngora Ramírez Dania Paula
