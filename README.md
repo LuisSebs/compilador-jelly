@@ -7,7 +7,7 @@
 # Ejecución
 
 Ejecuta el archivo `proyecto.rkt`, puedes hacerlo desde dr racket, al ejecutar el archivo
-se creara un archivo `Example.java/` en la carpeta `java_files`, este archivo se produce a partir del archivo `example.jly` que se encuentra en la carpeta `jelly_files/`. El archivo
+se creara un archivo `Example.java` en la carpeta `java_files/`, este archivo se produce a partir del archivo `example.jly` que se encuentra en la carpeta `jelly_files/`. El archivo
 generado es gracias al uso de todas las prácticas a lo largo del semestre y el proceso del proyecto final que convierte codigo **jelly** a codigo **java**.
 
 
