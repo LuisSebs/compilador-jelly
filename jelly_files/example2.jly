@@ -28,6 +28,9 @@ metodo(var1:int, var2:int): int {
         if (var1 < var2) var2 = var2 - var1
         else var1 = var1 - var2
     }
+    {-Nota:
+        es importante que al final de un metodo siempre vaya un return, debido 
+        a que el compilador revisa el tipo que regresa la ultima sentencia-}
     return 0
 }
 
