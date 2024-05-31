@@ -1,0 +1,60 @@
+funcion(){
+    // Expresiones booleanas
+    eb:boolean = (False != True) & !(True == False) | (False) 
+
+    // Expresiones aritmeticas
+    ea:int = (1 + 3) * (2 / (4 - 5))
+
+    // Asignaciones
+    b:boolean = !True
+    b2:boolean = !b
+
+    // Estructuras de control
+    // if
+    if(b){
+        ea++
+    } else {
+        ea--
+    }
+    // while
+    i:int = 10
+    while (i > 0){
+        i = i - 1
+    }
+}
+
+metodo(var1:int, var2:int): int {
+    while(var1 != 0) {
+        if (var1 < var2) var2 = var2 - var1
+        else var1 = var1 - var2
+    }
+    return 0
+}
+
+sintaxisExtra(){
+    // Declaracion multiple
+    int a,b,c 
+    
+    a = 0
+    b = 1
+    c = 2
+
+    // Asignacion compuesta
+    a += 5
+
+    // Autoincremento / Autodecremento
+    a++
+    a--
+
+    // Operador ternario
+    b = (True == (a > 1)) ? a : 0
+
+}
+
+main{
+    // Llamadas a funciones
+    funcion()
+    sintaxisExtra()
+    // Llamadas a metodos
+    var:int = metodo(1,2)
+}

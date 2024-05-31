@@ -79,9 +79,9 @@
                  [,cal (to-java-cal cal)] ;; CHECK
                  [,cal-arr (to-java-cal-arr cal-arr)] ;; CHECK
                  [,assign (to-java-assign assign)] ;; CHECK
-                 [(,ou ,e) (string-append (symbol->string ou) (to-java-e e))] ;; CHECK
-                 [(,ob ,e0 ,e1) (string-append (to-java-e e0) (symbol->string ob) (to-java-e e1))] ;; CHECK
-                 [(? ,e0 ,e1 ,e2) (string-append (to-java-e e0) " ? " (to-java-e e1) " : " (to-java-e e2))] ;; CHECK
+                 [(,ou ,e) (string-append "(" (to-java-ou ou) (to-java-e e) ")")] ;; CHECK
+                 [(,ob ,e0 ,e1) (string-append "(" (to-java-e e0) (to-java-ob ob) (to-java-e e1) ")")] ;; CHECK
+                 [(? ,e0 ,e1 ,e2) (string-append "(" (to-java-e e0) " ? " (to-java-e e1) " : " (to-java-e e2) ")")] ;; CHECK
                  ))
 
 ;; Arreglo
@@ -137,6 +137,18 @@
     [(eq? 'int-arr ty) "int[]"]
     [(eq? 'bool-arr) "boolean[]"]))
 
+;; Operador unario
+(define (to-java-ou ou)
+  (cond
+    [(eq? 'not ou) "!"]))
+
+;; Operador binario
+(define (to-java-ob ob)
+  (cond
+    [(eq? 'and ob) "&&"]
+    [(eq? 'or ob) "||"]
+    [else (symbol->string ob)]))
+
 ;; Funciones primitivas
 (define (primitive-cal? i)
   (memq i '(length)))
@@ -161,8 +173,8 @@
 
 ;; Extraer el nombre de un archivo
 (define (extract-filename file)
-  (let* ([re1 #rx"[a-zA-Z]+.jly"]
-         [re2 #rx"[a-zA-Z]+"]
+  (let* ([re1 #rx"[a-zA-Z0-9]+.jly"]
+         [re2 #rx"[a-zA-Z0-9]+"]
          [match1 (regexp-match re1 file)]
          [match2 (regexp-match re2 (first match1))])
     (first match2)))
@@ -173,3 +185,5 @@
 
 ;; Prueba:
 (define compilar-example-jly (jelly-compiler "jelly_files/example.jly"))
+;; Otra prueba
+;; (define compilar-example2-jly (jelly-compiler "jelly_files/example2.jly"))
