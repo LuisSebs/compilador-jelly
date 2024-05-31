@@ -330,5 +330,5 @@
                                        }
                                        ")]
                   [renombre (rename-var parseo)] 
-                  [tabla (symbol-table renombre (make-hash))])
+                  [tabla (symbol-table renombre (make-hash))])             
              (type-check renombre tabla)))
