@@ -25,7 +25,9 @@
   (nanopass-case (jelly Firma) ir
                  [,m (string-append "public static void main(String[] args) {\n" (to-java-m m) "\n}")] ;; CHECK
                  [,meth (to-java-meth meth)]
-                 [,fun (to-java-fun fun)]))
+                 [,fun (to-java-fun fun)]
+                 [,dec (string-append "static " (to-java-dec dec) ";")]
+                 [,dec-mult (string-append "static " (to-java-dec-mult dec-mult) ";")]))
 
 ;; Main
 (define (to-java-m ir) ;; CHECK
@@ -185,5 +187,9 @@
 
 ;; Prueba:
 (define compilar-example-jly (jelly-compiler "jelly_files/example.jly"))
+
+;;Variables Globales
+(define compilar-variablesGlobales-jly (jelly-compiler "jelly_files/variablesGlobales.jly"))
+
 ;; Otra prueba
 ;; (define compilar-example2-jly (jelly-compiler "jelly_files/example2.jly"))

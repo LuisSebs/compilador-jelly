@@ -280,6 +280,8 @@
          [proc
           [(func) $1] ;; Funciones          
           [(meth) $1] ;; Métodos
+          [(dec) $1]  ;; Declaracion (variables globales)
+          [(dec-mult) $1] ;; Declaracion multiple (variables globales)
           ]
 
          ;; Programa es:
@@ -527,7 +529,6 @@
 (define (ejecuta-pruebas [l pruebas])
   (for/list ([i l])
     (parsea i)))
-
 
 (define (lex-this lexer input) (lambda () (lexer input)))
 

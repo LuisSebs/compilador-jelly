@@ -30,7 +30,9 @@
   (nanopass-case (jelly Firma) ir
                  [,m (get-type-m m tb)]
                  [,meth (get-type-meth meth tb)]
-                 [,fun (get-type-fun fun tb)]))
+                 [,fun (get-type-fun fun tb)]
+                 [,dec (get-type-dec dec tb)]
+                 [,dec-mult (get-type-dec-mult dec-mult tb)]))
 
 ;; Main
 (define (get-type-m ir tb) ;; CHECK

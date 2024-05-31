@@ -52,7 +52,9 @@
   (Firma (firm)
          m
          meth
-         fun)
+         fun
+         dec
+         dec-mult)
   ;; Main CHECK CHECK
   (Main (m)
         (main block))
@@ -135,7 +137,9 @@
   (nanopass-case (jelly Firma) ir
                  [,m (vars-m m)]
                  [,meth (vars-meth meth)]
-                 [,fun (vars-fun fun)]))
+                 [,fun (vars-fun fun)]
+                 [,dec (vars-dec dec)]
+                 [,dec-mult (vars-dec-mult dec-mult)]))
 
 ;; Main
 (define (vars-m ir) ;; CHECK 
@@ -295,7 +299,7 @@
     (set! c (add1 c))
     (string->symbol str-sim)))
 
-;; Renombre las variables de un conjunto de variables
+;; Renombra las variables de un conjunto de variables
 (define (asigna vars)
   (let ([tabla (make-hash)])
     (set-for-each vars
@@ -312,27 +316,26 @@
 (define-pass rename-var : jelly (ir) -> jelly ()
   ;; Programa
   (Programa : Programa (ir) -> Programa ()
-            [(program ,firm* ...) `(program ,(map (lambda (v) (Firma v)) firm*) ...)])
+            [(program ,firm* ...) (let* ([vars (vars-p ir)]
+                                         [tabla (asigna vars)])
+                                    `(program ,(map (lambda (v) (Firma v tabla)) firm*) ...))])
   ;; Firma
-  (Firma : Firma (ir) -> Firma ()
-        [,m `,(Main m)]
-        [,meth `,(Metodo meth)]
-        [,fun `,(Funcion fun)])
+  (Firma : Firma (ir h) -> Firma ()
+        [,m `,(Main m h)]
+        [,meth `,(Metodo meth h)]
+        [,fun `,(Funcion fun h)]
+        [,dec `,(Declaracion dec h)]
+        [,dec-mult `,(Declaracionmult dec-mult h)])
   ;; Main
-  (Main : Main (ir) -> Main ()
-        [(main ,block) (let* ([vars (vars-m ir)]
-                              [tabla (asigna vars)])
-                         `(main ,(Bloque block tabla)))])
+  (Main : Main (ir h) -> Main ()
+        [(main ,block) `(main ,(Bloque block h))])
   ;; Metodo
-  (Metodo : Metodo (ir) -> Metodo () ;; CHECK
-          [(method ,i (,arg* ...) ,ty ,block) (let* ([vars (vars-meth ir)]
-                                                     [tabla (asigna vars)])
-                                                `(method ,i (,(map (lambda (v) (Argumento v tabla)) arg*) ...) ,ty ,(Bloque block tabla)))])
+  (Metodo : Metodo (ir h) -> Metodo () ;; CHECK
+          [(method ,i (,arg* ...) ,ty ,block) `(method ,i (,(map (lambda (v) (Argumento v h)) arg*) ...) ,ty ,(Bloque block h))])
+  
   ;; Funcion
-  (Funcion : Funcion (ir) -> Funcion ()
-           [(function ,i (,arg* ...) ,block) (let* ([vars (vars-fun ir)]
-                                                    [tabla (asigna vars)])
-                                               `(function ,i (,(map (lambda (v) (Argumento v tabla)) arg*) ...) ,(Bloque block tabla)))])
+  (Funcion : Funcion (ir h) -> Funcion ()
+           [(function ,i (,arg* ...) ,block) `(function ,i (,(map (lambda (v) (Argumento v h)) arg*) ...) ,(Bloque block h))])
   ;; Argumento
   (Argumento : Argumento (ir h) -> Argumento ()
              [(decl ,i ,ty) `(decl ,(hash-ref h i) ,ty)])
@@ -400,7 +403,9 @@
   (nanopass-case (jelly Firma) ir
                  [,m (get-symbol-table-m m tb)] ;; CHECK
                  [,meth (get-symbol-table-meth meth tb)] ;; CHECK
-                 [,fun (get-symbol-table-fun fun tb)]))  ;; CHECK
+                 [,fun (get-symbol-table-fun fun tb)]
+                 [,dec (get-symbol-table-dec dec tb)]
+                 [,dec-mult (get-symbol-table-dec-mult dec-mult tb)]))  ;; CHECK
 
 ;; Main
 (define (get-symbol-table-m ir tb) ;; CHECK
@@ -465,11 +470,3 @@
 
 ;; Tabla de simbolos de un programa
 (define tabla-de-simbolos-p (symbol-table p-renombrado (make-hash)))
-
-
-
-
-
-
-
-

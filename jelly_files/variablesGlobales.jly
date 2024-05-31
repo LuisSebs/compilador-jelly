@@ -1,0 +1,22 @@
+// Variables globales
+global1:int = 0
+global2:boolean = True
+int g3, g4, g5
+lon : int = 90
+i : int = 2
+truent : boolean = False
+calificaciones : int[]
+
+iterador(tope:int, incremento:int){
+    while(global2){
+        while(global1 < tope){
+            global1 += incremento
+        }
+        if(global1 >= tope)
+            global2 = False
+    }
+}
+
+main{
+    iterador(10,1)
+}
