@@ -185,11 +185,7 @@
 (define (upper str)
   (string-append (string-upcase (substring str 0 1)) (substring str 1)))
 
-;; Prueba:
+;; Ejemplos de prueba
 ;;(define compilar-example-jly (jelly-compiler "jelly_files/example.jly"))
-
-;;Variables Globales
 ;;(define compilar-variablesGlobales-jly (jelly-compiler "jelly_files/variablesGlobales.jly"))
-
-;; Otra prueba
-;; (define compilar-example2-jly (jelly-compiler "jelly_files/example2.jly"))
+;;(define compilar-example2-jly (jelly-compiler "jelly_files/example2.jly"))

@@ -4,11 +4,36 @@
 
 - **(+7 puntos)** Ejercicio principal: Proceso que convierte un archivo en código **jelly** a un archivo con código **java**.
 - **(+2 puntos)** Ejercicio 1: Definicion y uso de Variables globales
+- **(+2 puntos)** Ejercicio 4: Script para el compilador de jelly desde la línea de comandos
 
 # Ejecución
 
-Ejecuta el archivo `proyecto.rkt`, puedes hacerlo desde dr racket, al ejecutar el archivo
-se creara un archivo `Example.java` en la carpeta `java_files/`, este archivo se produce a partir del archivo `example.jly` que se encuentra en la carpeta `jelly_files/`. El archivo
-generado es gracias al uso de todas las prácticas a lo largo del semestre y el proceso del proyecto final que convierte codigo **jelly** a codigo **java**. Adicionalmente se crea un archivo java a partir del archivo `variablesGlobales.jly`.
+El comando para compilar un programa es el siguiente: 
+
+```bash
+    racket jelly-compiler.rkt -f <nombre-del-archivo>.jly
+```
+
+Al compilar un programa se generara un archivo **java** en la carpeta `java_files/`. Puedes obtener mayor informacion del compilador al ejecutar el siguiente comando:
+
+```bash
+    racket jelly-compiler.rkt -h
+```
+
+## Ejemplos
+
+En la carpeta `jelly_files/` puedes encontrar ejemplos de archivos **jelly**, para compilarlos ejecuta los siguientes comandos:
+
+```bash
+racket jelly-compiler.rkt -f jelly_files/example.jly
+```
+
+```bash
+racket jelly-compiler.rkt -f jelly_files/example2.jly
+```
+
+```bash
+racket jelly-compiler.rkt -f jelly_files/variablesGlobales.jly
+```
 
 

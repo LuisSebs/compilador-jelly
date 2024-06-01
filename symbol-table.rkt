@@ -186,7 +186,7 @@
 (define (vars-e ir)
   (nanopass-case (jelly Expr) ir
                  [,c (mutable-set)] ;; CHECK
-                 [,i (mutable-set i)] ;; CHECK
+                 [,i (mutable-set)] ;; CHECK
                  [,arr (vars-arr arr)] ;; CHECK
                  [,cal (vars-cal cal)] ;; CHECK
                  [,cal-arr (vars-cal-arr cal-arr)] ;; CHECK
@@ -309,6 +309,48 @@
 ;; Renombramos las variables del conjunto generado anteriormente
 ;;(define variables-de-programa-renombradas (asigna variables-de-programa))
 
+;; Obtiene las variables globales de un programa
+;;Programa
+(define (get-global-vars-p ir)
+  (nanopass-case (jelly Programa) ir
+                 [(program ,firm* ...) (let ([variables (mutable-set)])
+                                         (for-each (lambda (v) (set-union! variables (get-global-vars-firm v))) firm*)
+                                         variables)]))
+;; Firma
+(define (get-global-vars-firm ir)
+  (nanopass-case (jelly Firma) ir
+                 [,m (mutable-set)]
+                 [,meth (mutable-set)]
+                 [,fun (mutable-set)]
+                 [,dec (get-global-vars-dec dec)]
+                 [,dec-mult (get-global-vars-dec-mult dec-mult)]))
+;; Declaracion
+(define (get-global-vars-dec ir)
+  (nanopass-case (jelly Declaracion) ir
+                 [(decl ,i ,ty) (mutable-set i)]
+                 [(decl ,i ,ty ,e) (mutable-set i)]))
+
+;; Declaracion multiple
+(define (get-global-vars-dec-mult ir)
+  (nanopass-case (jelly Declaracionmult)ir
+                 [(decl-mult ,i* ... ,ty) (let ([variables (mutable-set)])
+                                            (for-each (lambda (v) (set-union! variables (mutable-set v))) i*)
+                                            variables)]))
+
+;; Genera la tabla de variables globales
+(define (tabla-globales vars)
+  (let ([tabla (make-hash)])
+    (set-for-each vars
+                  (lambda (v) (hash-set! tabla v v)))
+    tabla))
+
+;; Función para unir dos tablas hash
+(define (merge-hash-tables ht1 ht2)
+  (for-each (lambda (key-value-pair)
+              (hash-set! ht1 (car key-value-pair) (cdr key-value-pair)))
+            (hash->list ht2))
+  ht1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Renombre de variables
@@ -316,26 +358,37 @@
 (define-pass rename-var : jelly (ir) -> jelly ()
   ;; Programa
   (Programa : Programa (ir) -> Programa ()
-            [(program ,firm* ...) (let* ([vars (vars-p ir)]
-                                         [tabla (asigna vars)])
-                                    `(program ,(map (lambda (v) (Firma v tabla)) firm*) ...))])
+            [(program ,firm* ...) (let ([globales (get-global-vars-p ir)])
+                                    `(program ,(map (lambda (v) (Firma v globales)) firm*) ...))])
   ;; Firma
   (Firma : Firma (ir h) -> Firma ()
         [,m `,(Main m h)]
         [,meth `,(Metodo meth h)]
         [,fun `,(Funcion fun h)]
-        [,dec `,(Declaracion dec h)]
-        [,dec-mult `,(Declaracionmult dec-mult h)])
+        [,dec `,(Declaracion dec (tabla-globales h))] ;; CHECAR DESPUES
+        [,dec-mult `,(Declaracionmult dec-mult (tabla-globales h))]) ;; CHECAR DESPUES
   ;; Main
   (Main : Main (ir h) -> Main ()
-        [(main ,block) `(main ,(Bloque block h))])
+        [(main ,block) (let* ([vars (vars-m ir)]
+                              [tabla-vars (asigna vars)]
+                              [tabla-glob (tabla-globales h)]
+                              [tabla (merge-hash-tables tabla-glob tabla-vars)])
+                         `(main ,(Bloque block tabla)))])
   ;; Metodo
   (Metodo : Metodo (ir h) -> Metodo () ;; CHECK
-          [(method ,i (,arg* ...) ,ty ,block) `(method ,i (,(map (lambda (v) (Argumento v h)) arg*) ...) ,ty ,(Bloque block h))])
+          [(method ,i (,arg* ...) ,ty ,block) (let* ([vars (vars-meth ir)]
+                                                     [tabla-vars (asigna vars)]
+                                                     [tabla-glob (tabla-globales h)]
+                                                     [tabla (merge-hash-tables tabla-glob tabla-vars)])
+                                                `(method ,i (,(map (lambda (v) (Argumento v tabla)) arg*) ...) ,ty ,(Bloque block tabla)))])
   
   ;; Funcion
   (Funcion : Funcion (ir h) -> Funcion ()
-           [(function ,i (,arg* ...) ,block) `(function ,i (,(map (lambda (v) (Argumento v h)) arg*) ...) ,(Bloque block h))])
+           [(function ,i (,arg* ...) ,block) (let* ([vars (vars-fun ir)]
+                                                    [tabla-vars (asigna vars)]
+                                                    [tabla-glob (tabla-globales h)]
+                                                    [tabla (merge-hash-tables tabla-glob tabla-vars)])
+                                               `(function ,i (,(map (lambda (v) (Argumento v tabla)) arg*) ...) ,(Bloque block tabla)))])
   ;; Argumento
   (Argumento : Argumento (ir h) -> Argumento ()
              [(decl ,i ,ty) `(decl ,(hash-ref h i) ,ty)])
@@ -386,7 +439,7 @@
               [(= ,e0 ,e1) `(= ,(Expr e0 h) ,(Expr e1 h))]))
 
 ;; Renombramos las variables de un programa
-(define p-renombrado (rename-var p))
+;; (define p-renombrado (rename-var p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -469,4 +522,4 @@
                                       (get-symbol-table-block block tb))]))
 
 ;; Tabla de simbolos de un programa
-(define tabla-de-simbolos-p (symbol-table p-renombrado (make-hash)))
+;;(define tabla-de-simbolos-p (symbol-table p-renombrado (make-hash)))

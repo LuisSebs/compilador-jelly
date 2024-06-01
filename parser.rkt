@@ -62,6 +62,8 @@
     (parser
         [start program]
         [end EOF]
+        [expected-SR-conflicts 5]
+        [expected-RR-conflicts 5]
         [tokens contenedores vacios]
         [error (lambda (tok-ok? tok-name tok-value)
                  (raise-syntax-error 'error

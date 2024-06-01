@@ -30,9 +30,11 @@
 
 ;; Procesa los argumentos de la linea de comandos
 (define (main args)
-  (begin
+  (if (eq? "" args)
+      (display "Ingresa el nombre de un archivo jelly")
+      (begin
         (jelly-compiler args)
-        (printf "~a\n" "Successful build ʕ•ᴥ•ʔ.")))
+        (printf "~a\n" "Successful build ʕ•ᴥ•ʔ."))))
 
 ;; Ejecutamos la funcion principal con los argumentos de la linea de comandos;;
 (main (filename-param))
