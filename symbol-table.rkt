@@ -7,11 +7,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PRÁCTICA 5 : Tabla de simbolos
-;; Integrantes:
-;; - Arrieta Mancera Luis Sebastián
-;; - Góngora Ramírez Dania Paula
-;; - Martínez Hernández Zuriel Enrique
-;; - Villafán Flores María Fernanda
+;; Autor: Arrieta Mancera Luis Sebastian
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Da el syntax tree de una cadena del lenguaje jelly

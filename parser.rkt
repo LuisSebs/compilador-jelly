@@ -5,11 +5,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PRÁCTICA 3 : Parser
-;; Integrantes:
-;; - Arrieta Mancera Luis Sebastián
-;; - Góngora Ramírez Dania Paula
-;; - Martínez Hernández Zuriel Enrique
-;; - Villafán Flores María Fernanda
+;; Autor: Arrieta Mancera Luis Sebastian
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; 2+3

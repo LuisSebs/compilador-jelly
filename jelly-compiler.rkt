@@ -6,11 +6,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Puntos Extra : Script para el compilador jelly
-;; Integrantes:
-;; - Arrieta Mancera Luis Sebastián
-;; - Góngora Ramírez Dania Paula
-;; - Martínez Hernández Zuriel Enrique
-;; - Villafán Flores María Fernanda
+;; Autor: Arrieta Mancera Luis Sebastian
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; filename-param es el nombre de un archivo jelly a compilar, valor por default: ""

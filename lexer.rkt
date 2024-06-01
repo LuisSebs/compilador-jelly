@@ -6,10 +6,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PRÁCTICA 2 : Lexer y Tokens
 ;; Integrantes:
-;; - Arrieta Mancera Luis Sebastián
-;; - Góngora Ramírez Dania Paula
-;; - Martínez Hernández Zuriel Enrique
-;; - Villafán Flores María Fernanda
+;;; Autor: Arrieta Mancera Luis Sebastian
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
