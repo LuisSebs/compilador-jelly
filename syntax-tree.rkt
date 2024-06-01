@@ -122,5 +122,6 @@ gcd(a:int, b:int):int{
 
 ;; Función para probar:
 ;; Ejemplo: (st "2 + 3")
+;; Recibe una cadena y genera su sintax-tree
 (define (st str)
   (syntax-tree (parsea str)))

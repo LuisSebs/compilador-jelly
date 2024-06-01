@@ -532,8 +532,10 @@
   (for/list ([i l])
     (parsea i)))
 
+;; Lexer
 (define (lex-this lexer input) (lambda () (lexer input)))
 
+;; Recibe un string y lo parsea
 (define (parsea in)
         (let ([in-s (open-input-string in)])
         (jelly-parser (lex-this jelly-lex in-s))))

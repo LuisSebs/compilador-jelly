@@ -26,6 +26,12 @@
 (define (pj x)
   (parser-jelly (tr (st x))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;             Parser jelly             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Juicios
 (define (constante? c) (or (number? c) (memq c '(True False))))
 (define (op-binario? ob) (memq ob '(+ - * / % != == < > <= >= and or)))
@@ -115,9 +121,6 @@
 
 ;; Parser Jelly
 (define-parser parser-jelly jelly)
-
-;; EJEMPLO PARA PROBAR EL SEGUNDO PARSER
-;; (pj program)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -265,6 +268,7 @@
                                       variables)]))
 
 ;; Programa parseado
+#|
 (define p (parser-jelly '(program
   (main ((decl i int (= zzzz (+ zzzz 1))) (= zzzz (+ zzzz 1)) (decl r int (call gdc i zzz))))
   (method
@@ -286,9 +290,10 @@
           ((decl swap int (array-call a j)) (= (array-call a j) (array-call a (- j 1))) (= (array-call a (- j 1)) swap)))
         (= j (- j 1))))
       (= i (+ i 1)))))))))
+|#
 
 ;; Variables de todo un programa
-(define variables-de-programa (vars-p p))
+;; (define variables-de-programa (vars-p p))
 
 ;; Contador para nombres de variables
 (define c 0)
@@ -309,7 +314,12 @@
 ;; Renombramos las variables del conjunto generado anteriormente
 ;;(define variables-de-programa-renombradas (asigna variables-de-programa))
 
-;; Obtiene las variables globales de un programa
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;          Variables globales          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;Programa
 (define (get-global-vars-p ir)
   (nanopass-case (jelly Programa) ir
@@ -351,7 +361,11 @@
             (hash->list ht2))
   ht1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;         Renombre de variables        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Renombre de variables
 
@@ -365,8 +379,8 @@
         [,m `,(Main m h)]
         [,meth `,(Metodo meth h)]
         [,fun `,(Funcion fun h)]
-        [,dec `,(Declaracion dec (tabla-globales h))] ;; CHECAR DESPUES
-        [,dec-mult `,(Declaracionmult dec-mult (tabla-globales h))]) ;; CHECAR DESPUES
+        [,dec `,(Declaracion dec (tabla-globales h))]
+        [,dec-mult `,(Declaracionmult dec-mult (tabla-globales h))])
   ;; Main
   (Main : Main (ir h) -> Main ()
         [(main ,block) (let* ([vars (vars-m ir)]
@@ -439,9 +453,13 @@
               [(= ,e0 ,e1) `(= ,(Expr e0 h) ,(Expr e1 h))]))
 
 ;; Renombramos las variables de un programa
-;; (define p-renombrado (rename-var p))
+;; (define p-renombrado (rename-var p)) No va a funcionar porque el ejemplo usa variables no declaradas
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;           Tabla de simbolos          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Tabla de simbolos
 
@@ -522,4 +540,4 @@
                                       (get-symbol-table-block block tb))]))
 
 ;; Tabla de simbolos de un programa
-;;(define tabla-de-simbolos-p (symbol-table p-renombrado (make-hash)))
+;;(define tabla-de-simbolos-p (symbol-table p-renombrado (make-hash))) ;; No va a funcionar porque el programa usa variables no declaradas
