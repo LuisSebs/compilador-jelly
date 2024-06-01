@@ -179,7 +179,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;                             EJEMPLOS                             ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+#|
 ;; Γ ⊢ n ∶ int
 (define j1 (let* ([parseo (pj "main{ 2 }")]
                   [renombre (rename-var parseo)]
@@ -340,3 +340,4 @@
                   [renombre (rename-var parseo)] 
                   [tabla (symbol-table renombre (make-hash))])             
              (type-check renombre tabla)))
+|#
